@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Link's calculator</title>
+    <style>
+        /* Remove default margins and hide scrollbars on the parent window */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+        }
+        
+        .fullscreen-iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            margin: 0;
+            padding: 0;
+            z-index: 999999; /* Ensures it sits on top of all other elements */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Important security and capability permissions added inside 'allow' -->
+    <iframe src="https://agreeably-upheld-hunger.ngrok-free.dev" 
+            class="fullscreen-iframe" 
+            title="Embedded Fullscreen Content"
+            allow="fullscreen; autoplay; camera; microphone">
+    </iframe>
+
+</body>
+</html>
