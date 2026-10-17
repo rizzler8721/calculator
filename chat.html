@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fullscreen Ngrok Bypass Iframe</title>
+    <title>Link's calculator</title>
     <style>
         /* 1. Reset defaults and prevent background scrolling */
         html, body {
@@ -12,7 +12,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #000000; /* Dark background while loading */
+            background-color: #111111;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
@@ -27,90 +27,73 @@
             margin: 0;
             padding: 0;
             z-index: 1;
-            display: none; /* Hidden initially until the content loads successfully */
         }
 
-        /* 3. Sleek, centered loading indicator */
-        #loader {
+        /* 3. Helpful instructions panel underneath/behind the iframe */
+        #bypass-helper {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             color: #ffffff;
-            font-size: 1.2rem;
-            z-index: 2;
             text-align: center;
-        }
-        
-        #loader .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top-color: #ffffff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px auto;
+            z-index: 0; /* Sits behind iframe if iframe loads successfully */
+            background: #222;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            max-width: 400px;
+            width: 90%;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .btn {
+            display: inline-block;
+            background: #3f51b5;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: background 0.2s;
         }
+        .btn:hover { background: #5c6bc0; }
     </style>
 </head>
 <body>
 
-    <!-- Loading Screen -->
-    <div id="loader">
-        <div class="spinner"></div>
-        <div>Loading secure tunnel...</div>
+    <!-- This will show up if ngrok requires a manual click to clear the warning first -->
+    <div id="bypass-helper">
+        <h3 style="margin-top:0;">Stuck on a blank screen or loop?</h3>
+        <p style="color: #ccc; font-size: 0.95rem; line-height: 1.5;">
+            Ngrok requires a one-time confirmation to allow requests inside frames.
+        </p>
+        <!-- This link opens your ngrok tunnel in a new tab to clear the warning -->
+        <a href="https://agreeably-upheld-hunger.ngrok-free.dev" target="_blank" class="btn" onclick="reloadIframe()">
+            Click Here to Authorize
+        </a>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 15px;">
+            Click the button, click "Visit Site" on the page that opens, then return here!
+        </p>
     </div>
 
     <!-- Fullscreen Iframe -->
     <iframe id="ngrok-frame" 
+            src="https://agreeably-upheld-hunger.ngrok-free.dev" 
             class="fullscreen-iframe" 
             title="Embedded Fullscreen App"
             allow="fullscreen; autoplay; camera; microphone">
     </iframe>
 
     <script>
-        /************************************************************
-         *  👉 MODIFY THIS URL TO MATCH YOUR NGROK INSTANCE 👈
-         ************************************************************/
-        const NGROK_URL = "https://agreeably-upheld-hunger.ngrok-free.app"; 
-
-        const iframe = document.getElementById('ngrok-frame');
-        const loader = document.getElementById('loader');
-
-        // Fetch the page with the bypass header injected
-        fetch(NGROK_URL, {
-            method: "GET",
-            headers: {
-                "ngrok-skip-browser-warning": "true"
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP network error! Status: ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(htmlContent => {
-            // Fix relative asset links (images, CSS, JS) by pointing them back to your ngrok root URL
-            const baseTag = `<base href="${NGROK_URL}/">`;
-            const modifiedHtml = htmlContent.replace('<head>', `<head>${baseTag}`);
-
-            // Inject the clean HTML to avoid the warning page and redirect loops
-            iframe.srcdoc = modifiedHtml;
-
-            // Show the iframe and hide the loading spinner
-            iframe.style.display = "block";
-            loader.style.display = "none";
-        })
-        .catch(error => {
-            console.error("Failed to load the ngrok application:", error);
-            loader.innerHTML = `<div style="color: #ff4d4d; font-weight: bold;">Failed to connect to local tunnel.</div>
-                                <div style="font-size: 0.9rem; margin-top: 10px; color: #aaa;">Check if your local server and ngrok terminal are active.</div>`;
-        });
+        // Change this to your exact Ngrok URL (make sure it matches the ones above exactly)
+        const NGROK_URL = "https://agreeably-upheld-hunger.ngrok-free.dev";
+        function reloadIframe() {
+            // Automatically reloads the iframe 3 seconds after they click the authorize button
+            setTimeout(() => {
+                document.getElementById('ngrok-frame').src = NGROK_URL;
+            }, 3000);
+        }
     </script>
 </body>
 </html>
