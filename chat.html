@@ -3,97 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link's calculator</title>
+    <title>Fullscreen App Layout</title>
     <style>
-        /* 1. Reset defaults and prevent background scrolling */
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #111111;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #000;
         }
-
-        /* 2. Fullscreen iframe styling */
-        .fullscreen-iframe {
+        iframe {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
             border: none;
-            margin: 0;
-            padding: 0;
-            z-index: 1;
         }
-
-        /* 3. Helpful instructions panel underneath/behind the iframe */
-        #bypass-helper {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #ffffff;
-            text-align: center;
-            z-index: 0; /* Sits behind iframe if iframe loads successfully */
-            background: #222;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .btn {
-            display: inline-block;
-            background: #3f51b5;
-            color: white;
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-weight: bold;
-            margin-top: 15px;
-            transition: background 0.2s;
-        }
-        .btn:hover { background: #5c6bc0; }
     </style>
 </head>
 <body>
 
-    <!-- This will show up if ngrok requires a manual click to clear the warning first -->
-    <div id="bypass-helper">
-        <h3 style="margin-top:0;">Stuck on a blank screen or loop?</h3>
-        <p style="color: #ccc; font-size: 0.95rem; line-height: 1.5;">
-            Ngrok requires a one-time confirmation to allow requests inside frames.
-        </p>
-        <!-- This link opens your ngrok tunnel in a new tab to clear the warning -->
-        <a href="https://agreeably-upheld-hunger.ngrok-free.dev" target="_blank" class="btn" onclick="reloadIframe()">
-            Click Here to Authorize
-        </a>
-        <p style="font-size: 0.8rem; color: #888; margin-top: 15px;">
-            Click the button, click "Visit Site" on the page that opens, then return here!
-        </p>
-    </div>
-
-    <!-- Fullscreen Iframe -->
-    <iframe id="ngrok-frame" 
-            src="https://agreeably-upheld-hunger.ngrok-free.dev" 
-            class="fullscreen-iframe" 
-            title="Embedded Fullscreen App"
+    <!-- Swap out the src link below with your active .trycloudflare.com URL -->
+    <iframe src="https://shift-hospitals-psychological-everyone.trycloudflare.com" 
             allow="fullscreen; autoplay; camera; microphone">
     </iframe>
 
-    <script>
-        // Change this to your exact Ngrok URL (make sure it matches the ones above exactly)
-        const NGROK_URL = "https://agreeably-upheld-hunger.ngrok-free.dev";
-        function reloadIframe() {
-            // Automatically reloads the iframe 3 seconds after they click the authorize button
-            setTimeout(() => {
-                document.getElementById('ngrok-frame').src = NGROK_URL;
-            }, 3000);
-        }
-    </script>
 </body>
 </html>
