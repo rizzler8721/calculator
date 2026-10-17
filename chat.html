@@ -2,38 +2,115 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Link's calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Ngrok Bypass Iframe</title>
     <style>
-        /* Remove default margins and hide scrollbars on the parent window */
-        body {
+        /* 1. Reset defaults and prevent background scrolling */
+        html, body {
             margin: 0;
             padding: 0;
-            overflow: hidden; 
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000000; /* Dark background while loading */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-        
+
+        /* 2. Fullscreen iframe styling */
         .fullscreen-iframe {
             position: fixed;
             top: 0;
             left: 0;
-            bottom: 0;
-            right: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             border: none;
             margin: 0;
             padding: 0;
-            z-index: 999999; /* Ensures it sits on top of all other elements */
+            z-index: 1;
+            display: none; /* Hidden initially until the content loads successfully */
+        }
+
+        /* 3. Sleek, centered loading indicator */
+        #loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 1.2rem;
+            z-index: 2;
+            text-align: center;
+        }
+        
+        #loader .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <!-- Important security and capability permissions added inside 'allow' -->
-    <iframe src="https://agreeably-upheld-hunger.ngrok-free.dev" 
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <div>Loading secure tunnel...</div>
+    </div>
+
+    <!-- Fullscreen Iframe -->
+    <iframe id="ngrok-frame" 
             class="fullscreen-iframe" 
-            title="Embedded Fullscreen Content"
+            title="Embedded Fullscreen App"
             allow="fullscreen; autoplay; camera; microphone">
     </iframe>
 
+    <script>
+        /************************************************************
+         *  👉 MODIFY THIS URL TO MATCH YOUR NGROK INSTANCE 👈
+         ************************************************************/
+        const NGROK_URL = "https://agreeably-upheld-hunger.ngrok-free.app"; 
+
+        const iframe = document.getElementById('ngrok-frame');
+        const loader = document.getElementById('loader');
+
+        // Fetch the page with the bypass header injected
+        fetch(NGROK_URL, {
+            method: "GET",
+            headers: {
+                "ngrok-skip-browser-warning": "true"
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP network error! Status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(htmlContent => {
+            // Fix relative asset links (images, CSS, JS) by pointing them back to your ngrok root URL
+            const baseTag = `<base href="${NGROK_URL}/">`;
+            const modifiedHtml = htmlContent.replace('<head>', `<head>${baseTag}`);
+
+            // Inject the clean HTML to avoid the warning page and redirect loops
+            iframe.srcdoc = modifiedHtml;
+
+            // Show the iframe and hide the loading spinner
+            iframe.style.display = "block";
+            loader.style.display = "none";
+        })
+        .catch(error => {
+            console.error("Failed to load the ngrok application:", error);
+            loader.innerHTML = `<div style="color: #ff4d4d; font-weight: bold;">Failed to connect to local tunnel.</div>
+                                <div style="font-size: 0.9rem; margin-top: 10px; color: #aaa;">Check if your local server and ngrok terminal are active.</div>`;
+        });
+    </script>
 </body>
 </html>
